@@ -1,149 +1,66 @@
-/* ************************************************************************** */
-/** Descriptive File Name
+#include<xc.h>           // processor SFR definitions
+#include<sys/attribs.h>  // __ISR macro
 
-  @Company
-    Company Name
+// DEVCFG0
+#pragma config DEBUG = x // no debugging
+#pragma config JTAGEN = x // no jtag
+#pragma config ICESEL = x // use PGED1 and PGEC1
+#pragma config PWP = x // no write protect
+#pragma config BWP = x // no boot write protect
+#pragma config CP = x // no code protect
 
-  @File Name
-    filename.c
+// DEVCFG1
+#pragma config FNOSC = x // use primary oscillator with pll
+#pragma config FSOSCEN = x // turn off secondary oscillator
+#pragma config IESO = x // no switching clocks
+#pragma config POSCMOD = x // high speed crystal mode
+#pragma config OSCIOFNC = x // free up secondary osc pins
+#pragma config FPBDIV = x // divide CPU freq by 1 for peripheral bus clock
+#pragma config FCKSM = x // do not enable clock switch
+#pragma config WDTPS = x // slowest wdt
+#pragma config WINDIS = x // no wdt window
+#pragma config FWDTEN = x // wdt off by default
+#pragma config FWDTWINSZ = x // wdt window at 25%
 
-  @Summary
-    Brief description of the file.
+// DEVCFG2 - get the CPU clock to 48MHz
+#pragma config FPLLIDIV = x // divide input clock to be in range 4-5MHz
+#pragma config FPLLMUL = x // multiply clock after FPLLIDIV
+#pragma config FPLLODIV = x // divide clock after FPLLMUL to get 48MHz
+#pragma config UPLLIDIV = x // divider for the 8MHz input clock, then multiply by 12 to get 48MHz for USB
+#pragma config UPLLEN = x // USB clock on
 
-  @Description
-    Describe the purpose of this file.
- */
-/* ************************************************************************** */
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* Section: Included Files                                                    */
-/* ************************************************************************** */
-/* ************************************************************************** */
-
-/* This section lists the other files that are included in this file.
- */
-
-/* TODO:  Include other files here if needed. */
+// DEVCFG3
+#pragma config USERID = 0 // some 16bit userid, doesn't matter what
+#pragma config PMDL1WAY = x // allow multiple reconfigurations
+#pragma config IOL1WAY = x // allow multiple reconfigurations
+#pragma config FUSBIDIO = x // USB pins controlled by USB module
+#pragma config FVBUSONIO = x // USB BUSON controlled by USB module
 
 
-/* ************************************************************************** */
-/* ************************************************************************** */
-/* Section: File Scope or Global Data                                         */
-/* ************************************************************************** */
-/* ************************************************************************** */
+int main() {
 
-/*  A brief description of a section can be given directly below the section
-    banner.
- */
+    __builtin_disable_interrupts();
 
-/* ************************************************************************** */
-/** Descriptive Data Item Name
+    // set the CP0 CONFIG register to indicate that kseg0 is cacheable (0x3)
+    __builtin_mtc0(_CP0_CONFIG, _CP0_CONFIG_SELECT, 0xa4210583);
 
-  @Summary
-    Brief one-line summary of the data item.
+    // 0 data RAM access wait states
+    BMXCONbits.BMXWSDRM = 0x0;
+
+    // enable multi vector interrupts
+    INTCONbits.MVEC = 0x1;
+
+    // disable JTAG to get pins back
+    DDPCONbits.JTAGEN = 0;
     
-  @Description
-    Full description, explaining the purpose and usage of data item.
-    <p>
-    Additional description in consecutive paragraphs separated by HTML 
-    paragraph breaks, as necessary.
-    <p>
-    Type "JavaDoc" in the "How Do I?" IDE toolbar for more information on tags.
+    // do your TRIS and LAT commands here
     
-  @Remarks
-    Any additional remarks
- */
-int global_data;
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-// Section: Local Functions                                                   */
-/* ************************************************************************** */
-/* ************************************************************************** */
-
-/*  A brief description of a section can be given directly below the section
-    banner.
- */
-
-/* ************************************************************************** */
-
-/** 
-  @Function
-    int ExampleLocalFunctionName ( int param1, int param2 ) 
-
-  @Summary
-    Brief one-line description of the function.
-
-  @Description
-    Full description, explaining the purpose and usage of the function.
-    <p>
-    Additional description in consecutive paragraphs separated by HTML 
-    paragraph breaks, as necessary.
-    <p>
-    Type "JavaDoc" in the "How Do I?" IDE toolbar for more information on tags.
-
-  @Precondition
-    List and describe any required preconditions. If there are no preconditions,
-    enter "None."
-
-  @Parameters
-    @param param1 Describe the first parameter to the function.
+    __builtin_enable_interrupts();
     
-    @param param2 Describe the second parameter to the function.
-
-  @Returns
-    List (if feasible) and describe the return values of the function.
-    <ul>
-      <li>1   Indicates an error occurred
-      <li>0   Indicates an error did not occur
-    </ul>
-
-  @Remarks
-    Describe any special behavior not described above.
-    <p>
-    Any additional remarks.
-
-  @Example
-    @code
-    if(ExampleFunctionName(1, 2) == 0)
-    {
-        return 3;
+    while(1) {
+	    // use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
+		// remember the core timer runs at half the CPU speed
     }
- */
-static int ExampleLocalFunction(int param1, int param2) {
-    return 0;
+    
+    
 }
-
-
-/* ************************************************************************** */
-/* ************************************************************************** */
-// Section: Interface Functions                                               */
-/* ************************************************************************** */
-/* ************************************************************************** */
-
-/*  A brief description of a section can be given directly below the section
-    banner.
- */
-
-// *****************************************************************************
-
-/** 
-  @Function
-    int ExampleInterfaceFunctionName ( int param1, int param2 ) 
-
-  @Summary
-    Brief one-line description of the function.
-
-  @Remarks
-    Refer to the example_file.h interface header for function usage details.
- */
-int ExampleInterfaceFunction(int param1, int param2) {
-    return 0;
-}
-
-
-/* *****************************************************************************
- End of File
- */
