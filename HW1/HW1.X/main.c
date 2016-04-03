@@ -23,18 +23,18 @@
 #pragma config FWDTWINSZ = WINSZ_25 // wdt window at 25%
 
 // DEVCFG2 - get the CPU clock to 48MHz
-#pragma config FPLLIDIV = x // divide input clock to be in range 4-5MHz
-#pragma config FPLLMUL = x // multiply clock after FPLLIDIV
-#pragma config FPLLODIV = x // divide clock after FPLLMUL to get 48MHz
-#pragma config UPLLIDIV = x // divider for the 8MHz input clock, then multiply by 12 to get 48MHz for USB
-#pragma config UPLLEN = x // USB clock on
+#pragma config FPLLIDIV = DIV_2 // divide input clock to be in range 4-5MHz
+#pragma config FPLLMUL = MUL_20 // multiply clock after FPLLIDIV
+#pragma config FPLLODIV = DIV_2 // divide clock after FPLLMUL to get 48MHz
+#pragma config UPLLIDIV = DIV_2 // divider for the 8MHz input clock, then multiply by 12 to get 48MHz for USB
+#pragma config UPLLEN = ON // USB clock on
 
 // DEVCFG3
 #pragma config USERID = 0 // some 16bit userid, doesn't matter what
-#pragma config PMDL1WAY = x // allow multiple reconfigurations
-#pragma config IOL1WAY = x // allow multiple reconfigurations
-#pragma config FUSBIDIO = x // USB pins controlled by USB module
-#pragma config FVBUSONIO = x // USB BUSON controlled by USB module
+#pragma config PMDL1WAY = ON // allow multiple reconfigurations
+#pragma config IOL1WAY = ON // allow multiple reconfigurations
+#pragma config FUSBIDIO = ON // USB pins controlled by USB module
+#pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
 
 int main() {
