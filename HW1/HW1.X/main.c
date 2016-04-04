@@ -57,20 +57,19 @@ int main() {
     TRISBbits.TRISB4 = 1;   // pin B4 as input
     
     TRISAbits.TRISA4 = 0;  // pin A4 as output
-    LATAbits.LATA4 = 1;    
-    
-    
-    
-    
-    
-    
-    
+    //LATAbits.LATA4 = 1;    
     
     __builtin_enable_interrupts();
     
     while(1) {
 	    // use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
 		// remember the core timer runs at half the CPU speed
+        _CP0_SET_COUNT(0); // Reset the core counter 
+        LATAbits.LATA4 = 1;
+        while(_CP0_GET_COUNT() < 12000) 
+            { if (PORTBbits.RB4 == 0){ break; } }
+        if (PORTBbits.RB4 == 1){ LATAbits.LATA4 = 1;  } 
+        else{ LATAbits.LATA4 = 0; } 
     }
     
     
