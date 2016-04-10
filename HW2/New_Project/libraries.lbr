@@ -15488,6 +15488,43 @@ Used on FTDI breakouts</description>
 <text x="-10.16" y="5.08" size="1.27" layer="94">&gt;NAME</text>
 <text x="2.54" y="5.08" size="1.27" layer="94">&gt;VALUE</text>
 </symbol>
+<symbol name="PIC32MX250F128B">
+<pin name="1.MCLR" x="-25.4" y="30.48" length="middle"/>
+<pin name="2.AN0/RA0" x="-25.4" y="25.4" length="middle"/>
+<pin name="3.AN1/RA1" x="-25.4" y="20.32" length="middle"/>
+<pin name="4.AN2/RB0" x="-25.4" y="15.24" length="middle"/>
+<pin name="5.AN3/RB1" x="-25.4" y="10.16" length="middle"/>
+<pin name="6.AN4/RB2" x="-25.4" y="5.08" length="middle"/>
+<pin name="7.AN5/RB3" x="-25.4" y="0" length="middle"/>
+<pin name="8.VSS" x="-25.4" y="-5.08" length="middle"/>
+<pin name="9.OSC1/RA2" x="-25.4" y="-10.16" length="middle"/>
+<pin name="10.OSC2/RA3" x="-25.4" y="-15.24" length="middle"/>
+<pin name="11.RB4" x="-25.4" y="-20.32" length="middle"/>
+<pin name="12.T1CK/RA4" x="-25.4" y="-25.4" length="middle"/>
+<pin name="13.VDD" x="-25.4" y="-30.48" length="middle"/>
+<pin name="14.USBID/RB5" x="-25.4" y="-35.56" length="middle"/>
+<pin name="15.VBUS" x="25.4" y="-35.56" length="middle" rot="R180"/>
+<pin name="16.RB7" x="25.4" y="-30.48" length="middle" rot="R180"/>
+<pin name="17.RB8/SCL1" x="25.4" y="-25.4" length="middle" rot="R180"/>
+<pin name="18.RB9/SDA1" x="25.4" y="-20.32" length="middle" rot="R180"/>
+<pin name="19.VSS" x="25.4" y="-15.24" length="middle" rot="R180"/>
+<pin name="20.VCAP" x="25.4" y="-10.16" length="middle" rot="R180"/>
+<pin name="21.RB10/D+" x="25.4" y="-5.08" length="middle" rot="R180"/>
+<pin name="22.RB11/D-" x="25.4" y="0" length="middle" rot="R180"/>
+<pin name="23.VUSB3V3" x="25.4" y="5.08" length="middle" rot="R180"/>
+<pin name="24.AN11/RB13" x="25.4" y="10.16" length="middle" rot="R180"/>
+<pin name="25.AN10/RB14" x="25.4" y="15.24" length="middle" rot="R180"/>
+<pin name="26.AN9/RB15" x="25.4" y="20.32" length="middle" rot="R180"/>
+<pin name="27.AVSS" x="25.4" y="25.4" length="middle" rot="R180"/>
+<pin name="28.AVDD" x="25.4" y="30.48" length="middle" rot="R180"/>
+<text x="-12.7" y="35.56" size="1.778" layer="94">&gt;NAME</text>
+<text x="2.54" y="35.56" size="1.778" layer="94">&gt;VALUE</text>
+<wire x1="-22.86" y1="38.1" x2="-22.86" y2="-38.1" width="0.254" layer="94"/>
+<wire x1="-22.86" y1="-38.1" x2="22.86" y2="-38.1" width="0.254" layer="94"/>
+<wire x1="22.86" y1="-38.1" x2="22.86" y2="40.64" width="0.254" layer="94"/>
+<wire x1="22.86" y1="40.64" x2="-22.86" y2="40.64" width="0.254" layer="94"/>
+<wire x1="-22.86" y1="40.64" x2="-22.86" y2="38.1" width="0.254" layer="94"/>
+</symbol>
 </symbols>
 <devicesets>
 <deviceset name="R-US_" prefix="R" uservalue="yes">
@@ -21550,6 +21587,48 @@ Standard 15-pin 0.1" header. Use with straight break away headers (SKU : PRT-001
 <connect gate="G$1" pin="1.GND" pad="1"/>
 <connect gate="G$1" pin="2.VIN" pad="2"/>
 <connect gate="G$1" pin="3.VOUT" pad="3"/>
+</connects>
+<technologies>
+<technology name=""/>
+</technologies>
+</device>
+</devices>
+</deviceset>
+<deviceset name="PIC32MX250F128B">
+<gates>
+<gate name="G$1" symbol="PIC32MX250F128B" x="0" y="-2.54"/>
+</gates>
+<devices>
+<device name="" package="DIL28-3">
+<connects>
+<connect gate="G$1" pin="1.MCLR" pad="1"/>
+<connect gate="G$1" pin="10.OSC2/RA3" pad="10"/>
+<connect gate="G$1" pin="11.RB4" pad="11"/>
+<connect gate="G$1" pin="12.T1CK/RA4" pad="12"/>
+<connect gate="G$1" pin="13.VDD" pad="13"/>
+<connect gate="G$1" pin="14.USBID/RB5" pad="14"/>
+<connect gate="G$1" pin="15.VBUS" pad="15"/>
+<connect gate="G$1" pin="16.RB7" pad="16"/>
+<connect gate="G$1" pin="17.RB8/SCL1" pad="17"/>
+<connect gate="G$1" pin="18.RB9/SDA1" pad="18"/>
+<connect gate="G$1" pin="19.VSS" pad="19"/>
+<connect gate="G$1" pin="2.AN0/RA0" pad="2"/>
+<connect gate="G$1" pin="20.VCAP" pad="20"/>
+<connect gate="G$1" pin="21.RB10/D+" pad="21"/>
+<connect gate="G$1" pin="22.RB11/D-" pad="22"/>
+<connect gate="G$1" pin="23.VUSB3V3" pad="23"/>
+<connect gate="G$1" pin="24.AN11/RB13" pad="24"/>
+<connect gate="G$1" pin="25.AN10/RB14" pad="25"/>
+<connect gate="G$1" pin="26.AN9/RB15" pad="26"/>
+<connect gate="G$1" pin="27.AVSS" pad="27"/>
+<connect gate="G$1" pin="28.AVDD" pad="28"/>
+<connect gate="G$1" pin="3.AN1/RA1" pad="3"/>
+<connect gate="G$1" pin="4.AN2/RB0" pad="4"/>
+<connect gate="G$1" pin="5.AN3/RB1" pad="5"/>
+<connect gate="G$1" pin="6.AN4/RB2" pad="6"/>
+<connect gate="G$1" pin="7.AN5/RB3" pad="7"/>
+<connect gate="G$1" pin="8.VSS" pad="8"/>
+<connect gate="G$1" pin="9.OSC1/RA2" pad="9"/>
 </connects>
 <technologies>
 <technology name=""/>
