@@ -12006,10 +12006,10 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="GND4" library="libraries" deviceset="GND" device=""/>
 <part name="C1" library="libraries" deviceset="C-US" device="025-024X044" value="0.1uF"/>
 <part name="C4" library="libraries" deviceset="C-US" device="025-024X044" value="0.1uF"/>
-<part name="BUTTON1" library="libraries" deviceset="M03" device="PTH"/>
+<part name="RESET" library="libraries" deviceset="M03" device="PTH"/>
 <part name="R2" library="libraries" deviceset="R-US_" device="0207/10" value="10k"/>
 <part name="R3" library="libraries" deviceset="R-US_" device="0207/10" value="10k"/>
-<part name="BUTTON2" library="libraries" deviceset="M03" device="PTH"/>
+<part name="USER" library="libraries" deviceset="M03" device="PTH"/>
 <part name="LED2" library="led" deviceset="LED" device="3MM"/>
 <part name="R4" library="resistor" deviceset="R-US_" device="0207/10" value="330"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
@@ -12050,10 +12050,10 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <instance part="GND4" gate="1" x="-20.32" y="38.1"/>
 <instance part="C1" gate="G$1" x="127" y="30.48" rot="R90"/>
 <instance part="C4" gate="G$1" x="119.38" y="55.88" rot="R90"/>
-<instance part="BUTTON1" gate="J$1" x="15.24" y="53.34"/>
+<instance part="RESET" gate="J$1" x="15.24" y="53.34"/>
 <instance part="R2" gate="G$1" x="33.02" y="66.04" rot="R90"/>
 <instance part="R3" gate="G$1" x="12.7" y="5.08"/>
-<instance part="BUTTON2" gate="J$1" x="12.7" y="22.86"/>
+<instance part="USER" gate="J$1" x="12.7" y="22.86"/>
 <instance part="LED2" gate="G$1" x="-7.62" y="-17.78"/>
 <instance part="R4" gate="G$1" x="-7.62" y="-33.02" rot="R90"/>
 <instance part="GND5" gate="1" x="-7.62" y="-45.72"/>
@@ -12064,7 +12064,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <instance part="GND6" gate="1" x="93.98" y="78.74"/>
 <instance part="GND7" gate="1" x="129.54" y="106.68" rot="R90"/>
 <instance part="LED1" gate="G$1" x="20.32" y="-38.1"/>
-<instance part="R1" gate="G$1" x="20.32" y="-53.34" rot="R90"/>
+<instance part="R1" gate="G$1" x="20.32" y="-50.8" rot="R90"/>
 <instance part="GND8" gate="1" x="20.32" y="-68.58"/>
 <instance part="+3V1" gate="G$1" x="20.32" y="-25.4"/>
 <instance part="GND9" gate="1" x="139.7" y="30.48" rot="R90"/>
@@ -12205,7 +12205,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <label x="101.6" y="10.16" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="BUTTON1" gate="J$1" pin="1"/>
+<pinref part="RESET" gate="J$1" pin="1"/>
 <wire x1="22.86" y1="50.8" x2="27.94" y2="50.8" width="0.1524" layer="91"/>
 <label x="25.4" y="50.8" size="1.778" layer="95"/>
 </segment>
@@ -12215,7 +12215,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <label x="81.28" y="-55.88" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="BUTTON2" gate="J$1" pin="3"/>
+<pinref part="USER" gate="J$1" pin="3"/>
 <wire x1="20.32" y1="25.4" x2="27.94" y2="27.94" width="0.1524" layer="91"/>
 <wire x1="27.94" y1="27.94" x2="27.94" y2="33.02" width="0.1524" layer="91"/>
 <pinref part="GND11" gate="1" pin="GND"/>
@@ -12248,7 +12248,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <segment>
 <pinref part="GND8" gate="1" pin="GND"/>
 <pinref part="R1" gate="G$1" pin="1"/>
-<wire x1="20.32" y1="-66.04" x2="20.32" y2="-58.42" width="0.1524" layer="91"/>
+<wire x1="20.32" y1="-66.04" x2="20.32" y2="-55.88" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="SWITCH" gate="G$1" pin="1.GND"/>
@@ -12320,7 +12320,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <pinref part="U1" gate="G$1" pin="11.RB4"/>
 <label x="43.18" y="5.08" size="1.778" layer="95"/>
 <wire x1="17.78" y1="5.08" x2="20.32" y2="5.08" width="0.1524" layer="91"/>
-<pinref part="BUTTON2" gate="J$1" pin="1"/>
+<pinref part="USER" gate="J$1" pin="1"/>
 <wire x1="20.32" y1="5.08" x2="48.26" y2="5.08" width="0.1524" layer="91"/>
 <wire x1="20.32" y1="20.32" x2="20.32" y2="5.08" width="0.1524" layer="91"/>
 <junction x="20.32" y="5.08"/>
@@ -12512,7 +12512,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <wire x1="45.72" y1="60.96" x2="45.72" y2="55.88" width="0.1524" layer="91"/>
 <junction x="45.72" y="55.88"/>
 <label x="45.72" y="60.96" size="1.778" layer="95"/>
-<pinref part="BUTTON1" gate="J$1" pin="3"/>
+<pinref part="RESET" gate="J$1" pin="3"/>
 <wire x1="33.02" y1="55.88" x2="33.02" y2="60.96" width="0.1524" layer="91"/>
 <junction x="33.02" y="55.88"/>
 <pinref part="R2" gate="G$1" pin="1"/>
@@ -12546,7 +12546,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <segment>
 <pinref part="R1" gate="G$1" pin="2"/>
 <pinref part="LED1" gate="G$1" pin="C"/>
-<wire x1="20.32" y1="-48.26" x2="20.32" y2="-43.18" width="0.1524" layer="91"/>
+<wire x1="20.32" y1="-45.72" x2="20.32" y2="-43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
