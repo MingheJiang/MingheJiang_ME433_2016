@@ -350,7 +350,7 @@ UsedLibrary="libraries.lbr"
 
 [Win_1]
 Type="Control Panel"
-Loc="299 256 1427 854"
+Loc="403 163 1725 941"
 State=2
 Number=0
 
