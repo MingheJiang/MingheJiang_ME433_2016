@@ -11997,14 +11997,14 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="J2" library="libraries" deviceset="M08" device=""/>
 <part name="PICKIT" library="libraries" deviceset="M05" device="PTH"/>
 <part name="+3V2" library="libraries" deviceset="+3V3" device=""/>
-<part name="RESONATOR" library="libraries" deviceset="M03" device="PTH"/>
+<part name="Y1" library="libraries" deviceset="M03" device="PTH" value="8MHz"/>
 <part name="+3V3" library="libraries" deviceset="+3V3" device=""/>
 <part name="C2" library="libraries" deviceset="C-US" device="025-024X044" value="0.1uF"/>
 <part name="GND2" library="libraries" deviceset="GND" device=""/>
 <part name="C3" library="libraries" deviceset="C-US" device="025-024X044" value="10uF"/>
 <part name="GND3" library="libraries" deviceset="GND" device=""/>
 <part name="GND4" library="libraries" deviceset="GND" device=""/>
-<part name="C1" library="libraries" deviceset="C-US" device="025-024X044" value="0.1uF"/>
+<part name="C1" library="libraries" deviceset="C-US" device="025-024X044" value="10uF"/>
 <part name="C4" library="libraries" deviceset="C-US" device="025-024X044" value="0.1uF"/>
 <part name="RESET" library="libraries" deviceset="M03" device="PTH"/>
 <part name="R2" library="libraries" deviceset="R-US_" device="0207/10" value="10k"/>
@@ -12014,7 +12014,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <part name="R4" library="resistor" deviceset="R-US_" device="0207/10" value="330"/>
 <part name="GND5" library="supply1" deviceset="GND" device=""/>
 <part name="GND1" library="supply1" deviceset="GND" device=""/>
-<part name="C5" library="libraries" deviceset="C-US" device="025-024X044" value="1uF"/>
+<part name="C5" library="libraries" deviceset="C-US" device="025-024X044" value="0.1uF"/>
 <part name="C6" library="libraries" deviceset="C-US" device="025-024X044" value="10uF"/>
 <part name="C7" library="libraries" deviceset="C-US" device="025-024X044" value="0.1uF"/>
 <part name="GND6" library="supply1" deviceset="GND" device=""/>
@@ -12041,7 +12041,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <instance part="J2" gate="G$1" x="111.76" y="-66.04"/>
 <instance part="PICKIT" gate="G$1" x="71.12" y="-55.88"/>
 <instance part="+3V2" gate="G$1" x="-2.54" y="48.26"/>
-<instance part="RESONATOR" gate="J$1" x="-20.32" y="15.24"/>
+<instance part="Y1" gate="J$1" x="-20.32" y="15.24"/>
 <instance part="+3V3" gate="G$1" x="33.02" y="-5.08" rot="R90"/>
 <instance part="C2" gate="G$1" x="38.1" y="-15.24"/>
 <instance part="GND2" gate="1" x="38.1" y="-27.94"/>
@@ -12160,7 +12160,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 <label x="121.92" y="-73.66" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="RESONATOR" gate="J$1" pin="2"/>
+<pinref part="Y1" gate="J$1" pin="2"/>
 <wire x1="-12.7" y1="15.24" x2="-10.16" y2="15.24" width="0.1524" layer="91"/>
 <label x="-10.16" y="15.24" size="1.778" layer="95"/>
 </segment>
@@ -12520,7 +12520,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 </net>
 <net name="OSC1" class="0">
 <segment>
-<pinref part="RESONATOR" gate="J$1" pin="3"/>
+<pinref part="Y1" gate="J$1" pin="3"/>
 <wire x1="-12.7" y1="17.78" x2="-7.62" y2="17.78" width="0.1524" layer="91"/>
 <label x="-10.16" y="17.78" size="1.778" layer="95"/>
 </segment>
@@ -12532,7 +12532,7 @@ Standard 3-pin 0.1" header. Use with straight break away headers (SKU : PRT-0011
 </net>
 <net name="OSC2" class="0">
 <segment>
-<pinref part="RESONATOR" gate="J$1" pin="1"/>
+<pinref part="Y1" gate="J$1" pin="1"/>
 <wire x1="-12.7" y1="12.7" x2="-7.62" y2="12.7" width="0.1524" layer="91"/>
 <label x="-10.16" y="12.7" size="1.778" layer="95"/>
 </segment>
