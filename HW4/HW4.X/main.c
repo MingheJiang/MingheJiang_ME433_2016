@@ -1,6 +1,6 @@
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
-//#include "i2c_master_noint.h"
+#include "i2c_master_noint.h"
 #include <math.h> 
 
 // DEVCFG0
@@ -39,15 +39,17 @@
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
 // PIC is the master, ram is the slave
-// SDO1(RB2) -> SDI
+// SDO1(RA1) -> SDI
 // SDI1(RB8) -> VOUTA 
 // SCK1(RB14) -> SCK
-// SS1(RB15) -> CS
+// SS1(RB7) -> CS
 #define CS LATBbits.LATB7       // chip select pin
 #define pi 3.1415926
 
 static volatile float Waveforms[100]; //wave form
 static volatile float Waveformt[200]; //wave form
+unsigned char read  = 0x00;
+unsigned char GP7 = 0x00;
 
 // send a byte via spi and return the response
 unsigned char spi_io(unsigned char o) {
@@ -105,13 +107,52 @@ void spi1_init() {
   SPI1CONbits.ON = 1;       // turn on spi 1
 }
 
-void expander_init(){
-//    i2c_master_start();
-//    i2c_master_send();
- //   i2c_master_send();
- //   i2c_master_send();
- //   i2c_master_stop();
+void initExpander(){
+    i2c_master_start();
+    i2c_master_send(0x40);    
+    i2c_master_send(0x00);
+    i2c_master_send(0xf0);
+    i2c_master_stop();
 }
+
+
+unsigned char getExpander(){
+    i2c_master_start();
+    i2c_master_send(0x40);    
+    i2c_master_send(0x09);
+    i2c_master_restart();
+    i2c_master_send(0x41);
+    read = i2c_master_recv();
+    i2c_master_ack(1);
+    i2c_master_stop();
+    
+    return read;
+}
+unsigned char setlow(int pin){
+    unsigned char b1=0xff;
+    unsigned char b2, b3, b4;
+    b2 = b1 << (pin+1);
+    b3 = b1 >> (8-pin);
+    b4 = b2 ^ b3;
+    return b4;
+}
+void setExpander(int pin, int out){
+        
+        getExpander();
+        i2c_master_start();
+        i2c_master_send(0x40);    
+        i2c_master_send(0x0A);
+        if(out == 1){
+            i2c_master_send((1 << pin)|read);
+        }
+        if(out == 0){
+            unsigned char temp;
+            temp = setlow(pin);
+            i2c_master_send(read&temp);
+        }        
+        i2c_master_stop();   
+}
+
 
 int main(){
     __builtin_disable_interrupts();
@@ -132,11 +173,27 @@ int main(){
     makesinewave();
     maketrianglewave();
     spi1_init();
-    //i2c_master_setup();
-    //expander_init();
-    
+    i2c_master_setup();
+    initExpander();
+       /* i2c_master_start();
+        i2c_master_send(0x40);
+        i2c_master_send(0x0A);
+        i2c_master_send(0x00);
+        i2c_master_stop();*/
+
+
     while(1) {
         _CP0_SET_COUNT(0); // Reset the core counter
+        //setExpander(3, 1);
+        GP7 = (getExpander() >> 7);
+        while(_CP0_GET_COUNT() < 12000){;}
+        if(GP7 == 1){
+            setExpander(0, 1);
+        }
+        else{
+            setExpander(0, 0);
+            
+        }
         static int s = 0;
         static int t = 0;
         setVoltage(0,Waveforms[s]);
