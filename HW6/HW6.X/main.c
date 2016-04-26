@@ -107,21 +107,36 @@ void spi1_init() {
   SPI1CONbits.ON = 1;       // turn on spi 1
 }
 
-void initExpander(){
+void initXL(){
     i2c_master_start();
-    i2c_master_send(0x40);    //write
-    i2c_master_send(0x00);  //IODIR
-    i2c_master_send(0xf0); //7:4->1;3:0->0
+    i2c_master_send(0xD6); //Write 0b1101011(D6h)
+    i2c_master_send(0x10); //CTRL1_XL (10h)
+    i2c_master_send(0x80);  //1.66 kHz
     i2c_master_stop();
 }
-
+void initG(){
+    i2c_master_start();
+    i2c_master_send(0xD6); //Write 0b1101011(D6h)
+    i2c_master_send(0x11); //CTRL2_G (11h)
+    i2c_master_send(0x80);  //1.66 kHz
+    i2c_master_stop();
+}
+void initC(){
+    i2c_master_start();
+    i2c_master_send(0xD6); //Write 0b1101011(D6h)
+    i2c_master_send(0x12); //CTRL3_C (12h)
+    i2c_master_send(0x04);  //enabled IF_INC
+    i2c_master_stop();
+}
+//void I2C_read_multiple(char address, char register, unsigned char * data, char length){
+//}
 
 unsigned char getExpander(){
     i2c_master_start();
-    i2c_master_send(0x40);    
-    i2c_master_send(0x09);//GPIO
+    i2c_master_send(0xD6);    
+    i2c_master_send(0x0F);//WHO_AM_I (0Fh)
     i2c_master_restart();
-    i2c_master_send(0x41);//read
+    i2c_master_send(0xD7);//read ob11010111 (D7h)
     read = i2c_master_recv();
     i2c_master_ack(1);
     i2c_master_stop();
@@ -169,39 +184,33 @@ int main(){
     TRISAbits.TRISA4 = 0;  // pin A4 as output
     //LATAbits.LATA4 = 1;       
     __builtin_enable_interrupts();
-    
-    makesinewave();
-    maketrianglewave();
-    spi1_init();
+
     i2c_master_setup();
-    initExpander();
-       /* i2c_master_start();
-        i2c_master_send(0x40);
-        i2c_master_send(0x0A);
-        i2c_master_send(0x00);
-        i2c_master_stop();*/
+    initXL();
+    initG();
+    initC();
+    
+    
+    i2c_master_start();
+    i2c_master_send(0xD6);    
+    i2c_master_send(0x0F);//WHO_AM_I (0Fh)
+    i2c_master_restart();
+    i2c_master_send(0xD7);//read 0b11010111 (D7h)
+    read = i2c_master_recv();
+    i2c_master_ack(1);
+    i2c_master_stop();
 
 
     while(1) {
         _CP0_SET_COUNT(0); // Reset the core counter
-        //setExpander(3, 1);
-        GP7 = (getExpander() >> 7);
+        
         while(_CP0_GET_COUNT() < 12000){;}
-        if(GP7 == 1){
-            setExpander(0, 1);
+        if(read == 0x69){
+            LATAbits.LATA4 = 1; 
         }
         else{
-            setExpander(0, 0);
-            
+            LATAbits.LATA4 = 0; 
         }
-        static int s = 0;
-        static int t = 0;
-        setVoltage(0,Waveforms[s]);
-        setVoltage(1,Waveformt[t]);
-        s++;
-        t++;
-        if(s >= 100){ s = 0;}
-        if(t >= 200){ t = 0;}        
+        }
         while(_CP0_GET_COUNT() < 24000){;}    
     }
-}
