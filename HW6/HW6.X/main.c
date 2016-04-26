@@ -43,13 +43,27 @@
 // SDI1(RB8) -> VOUTA 
 // SCK1(RB14) -> SCK
 // SS1(RB7) -> CS
-#define CS LATBbits.LATB7       // chip select pin
-#define pi 3.1415926
 
-static volatile float Waveforms[100]; //wave form
-static volatile float Waveformt[200]; //wave form
+#define CS          LATBbits.LATB7       // chip select pin
+#define OUT_TEMP_L  0b00100000
+#define OUT_TEMP_H  0b00100001
+#define OUTX_L_G    0b00100010
+#define OUTX_H_G    0b00100011
+#define OUTY_L_G    0b00100100
+#define OUTY_H_G    0b00100101
+#define OUTY_H_G    0b00100110
+#define OUTZ_H_G    0b00100111
+#define OUTX_L_XL   0b00101000
+#define OUTX_H_XL   0b00101001
+#define OUTY_L_XL   0b00101010
+#define OUTY_H_XL   0b00101011
+#define OUTZ_L_XL   0b00101100
+#define OUTZ_H_XL   0b00101101
+
 unsigned char read  = 0x00;
-unsigned char GP7 = 0x00;
+unsigned char addr = 0b1101011;
+static unsigned char data[14];
+static unsigned char dataout[7];
 
 // send a byte via spi and return the response
 unsigned char spi_io(unsigned char o) {
@@ -58,53 +72,6 @@ unsigned char spi_io(unsigned char o) {
     ;
   }
   return SPI1BUF;
-}
-
-void setVoltage(char channel, float voltage){//channel is 0 or 1 (for VoutA and VoutB)
-    int v = voltage;
-    if(channel == 0){
-    CS = 0; 
-    spi_io(v >> 4 | 0b01110000);
-    spi_io(v << 4);
-    CS = 1;}  
-    else{
-    CS = 0; 
-    spi_io(v >> 4 | 0b11110000);
-    spi_io(v << 4);
-    CS = 1; }
-}
-
-void makesinewave(){
-    int i = 0;
-    for (i = 0; i < 100; ++i){
-        Waveforms[i] = 124 + 125*sin(2*pi*10*0.001*i);}
-}
-
-void maketrianglewave(){
-    int i = 0;
-    for (i = 0; i < 200; ++i){    
-        Waveformt[i] = 250*i*0.005;}
-}
-
-void spi1_init() {
-  // when a command is beginning (clear CS to low) and when it
-  // is ending (set CS high)
-  TRISBbits.TRISB7 = 0b0;
-  CS = 1;
-  SS1Rbits.SS1R = 0b0100;   // assign SS1 to RB7
-  SDI1Rbits.SDI1R = 0b0000; // assign SDI1 to RA1 
-  RPB8Rbits.RPB8R = 0b0011; // assign SDO1 to RB8
-  ANSELBbits.ANSB14 = 0;    // turn off AN10
-  // setup spi
-  SPI1CON = 0;              // turn off the spi module and reset it
-  SPI1BUF;                  // clear the rx buffer by reading from it
-  SPI1BRG = 0x1;            // baud rate to 12 MHz [SPI1BRG = (48000000/(2*desired))-1]
-  SPI1STATbits.SPIROV = 0;  // clear the overflow bit
-  SPI1CONbits.MODE32 = 0;  //MODE<32,16> = <0,0> ->communication is byte-wide (8 bits)
-  SPI1CONbits.MODE16 = 0;
-  SPI1CONbits.CKE = 1;      // data changes when clock goes from hi to lo (since CKP is 0)
-  SPI1CONbits.MSTEN = 1;    // master operation
-  SPI1CONbits.ON = 1;       // turn on spi 1
 }
 
 void initXL(){
@@ -128,47 +95,55 @@ void initC(){
     i2c_master_send(0x04);  //enabled IF_INC
     i2c_master_stop();
 }
-//void I2C_read_multiple(char address, char register, unsigned char * data, char length){
-//}
-
-unsigned char getExpander(){
+unsigned char I2C_read_multiple(char address,char register, unsigned char * data, char length){
     i2c_master_start();
-    i2c_master_send(0xD6);    
-    i2c_master_send(0x0F);//WHO_AM_I (0Fh)
+    i2c_master_send((address << 1) | 0); // write
+    i2c_master_send(register);
     i2c_master_restart();
-    i2c_master_send(0xD7);//read ob11010111 (D7h)
+    i2c_master_send((address << 1) | 1); // read
+    int count = 0;
+    for(count = 0; count < length; count++)
+    {
+        data[count] = i2c_master_recv();
+        i2c_master_ack(0); // continue reading 
+    }
+    data[length] = i2c_master_recv(); 
+    i2c_master_ack(1);
+    i2c_master_stop();
+}
+
+unsigned char I2C_read(char register){
+    i2c_master_start();
+    i2c_master_send(0xD6); //Write 0b1101011(D6h) 
+    i2c_master_send(register);
+    i2c_master_restart();
+    i2c_master_send(0xD7);//read 0b11010111 (D7h)
     read = i2c_master_recv();
     i2c_master_ack(1);
     i2c_master_stop();
-    
     return read;
 }
-unsigned char setlow(int pin){
-    unsigned char b1=0xff;
-    unsigned char b2, b3, b4;
-    b2 = b1 << (pin+1);
-    b3 = b1 >> (8-pin);
-    b4 = b2 ^ b3;
-    return b4;
+void initOC_PWM(){
+    //remap RPB as OC3
+    RPA0Rbits.RPA0R = 0b0101; //OC1:RA0
+    RPA1Rbits.RPA1R = 0b0101; //OC2:RA1
+    
+    T2CONbits.TCKPS = 4;     // Timer2 prescaler N=16 (1:16)
+	PR2 = 2999; // period = (4999+1) * 16 * 12.5 ns = 1000 us, 1 kHz
+	TMR2 = 0; // initialize count to 0
+   
+    OC1CONbits.OCM = 0b110;  // PWM mode without fault pin; other OC1CON bits are defaults
+    OC1CONbits.OCTSEL	= 0;			// use Timer 2
+    OC1RS = 1500;             // duty cycle = OC1RS/(PR2+1) = 50%
+    OC1R = 1500;              // initialize before turning OC1 on; afterward it is read-only
+    OC2CONbits.OCM = 0b110;  // PWM mode without fault pin; other OC1CON bits are defaults
+    OC2CONbits.OCTSEL	= 0;			// use Timer 2
+    OC2RS = 1500;             // duty cycle = OC1RS/(PR2+1) = 50%
+    OC2R = 1500;              // initialize before turning OC2 on; afterward it is read-only    
+    T2CONbits.ON = 1;        // turn on Timer2
+    OC1CONbits.ON = 1;       // turn on OC1    
+    OC2CONbits.ON = 1;       // turn on OC2    
 }
-void setExpander(int pin, int out){
-        
-        getExpander();
-        i2c_master_start();
-        i2c_master_send(0x40);    
-        i2c_master_send(0x0A);
-        if(out == 1){
-            i2c_master_send((1 << pin)|read);
-        }
-        if(out == 0){
-            unsigned char temp;
-            temp = setlow(pin);
-            i2c_master_send(read&temp);
-        }        
-        i2c_master_stop();   
-}
-
-
 int main(){
     __builtin_disable_interrupts();
     // set the CP0 CONFIG register to indicate that kseg0 is cacheable (0x3)
@@ -182,15 +157,16 @@ int main(){
     // do your TRIS and LAT commands here
     TRISBbits.TRISB4 = 1;   // pin B4 as input  
     TRISAbits.TRISA4 = 0;  // pin A4 as output
-    //LATAbits.LATA4 = 1;       
-    __builtin_enable_interrupts();
-
+    //LATAbits.LATA4 = 1;   
     i2c_master_setup();
     initXL();
     initG();
-    initC();
-    
-    
+    initC();    
+    initOC_PWM();
+    __builtin_enable_interrupts();
+           
+                
+    /*      
     i2c_master_start();
     i2c_master_send(0xD6);    
     i2c_master_send(0x0F);//WHO_AM_I (0Fh)
@@ -199,18 +175,27 @@ int main(){
     read = i2c_master_recv();
     i2c_master_ack(1);
     i2c_master_stop();
-
-
-    while(1) {
+    */  
+    while(1) {       
+        int length = 14;
         _CP0_SET_COUNT(0); // Reset the core counter
+        LATAbits.LATA4 = !LATAbits.LATA4;
+        I2C_read_multiple(addr, OUT_TEMP_L, data, length);
+        int i = 0;
+        for(i = 0; i < length/2; i++){    
+            dataout[i] = (data[2*i+1] << 8 | data[2*i]);
+        }    
         
+        
+        
+        /*
         while(_CP0_GET_COUNT() < 12000){;}
         if(read == 0x69){
             LATAbits.LATA4 = 1; 
         }
         else{
             LATAbits.LATA4 = 0; 
-        }
-        }
-        while(_CP0_GET_COUNT() < 24000){;}    
+        }*/
     }
+        while(_CP0_GET_COUNT() < 24000){;}    
+}
