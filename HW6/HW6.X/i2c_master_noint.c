@@ -6,7 +6,7 @@
 // I2C pins need pull-up resistors, 2k-10k
 
 void i2c_master_setup(void) {
-  I2C2BRG = 233;                    // I2CBRG = [1/(2*100kHz) - 104ns]*48MHz - 2 
+  I2C2BRG = 53;                    // I2CBRG = [1/(2*100kHz) - 104ns]*48MHz - 2 
   ANSELBbits.ANSB2 = 0;             // turn off default analog pin B2
   ANSELBbits.ANSB3 = 0;             // turn off default analog pin B3
   I2C2CONbits.ON = 1;               // turn on the I2C2 module

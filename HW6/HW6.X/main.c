@@ -46,24 +46,11 @@
 
 #define CS          LATBbits.LATB7       // chip select pin
 #define OUT_TEMP_L  0b00100000
-#define OUT_TEMP_H  0b00100001
-#define OUTX_L_G    0b00100010
-#define OUTX_H_G    0b00100011
-#define OUTY_L_G    0b00100100
-#define OUTY_H_G    0b00100101
-#define OUTY_H_G    0b00100110
-#define OUTZ_H_G    0b00100111
-#define OUTX_L_XL   0b00101000
-#define OUTX_H_XL   0b00101001
-#define OUTY_L_XL   0b00101010
-#define OUTY_H_XL   0b00101011
-#define OUTZ_L_XL   0b00101100
-#define OUTZ_H_XL   0b00101101
 
 unsigned char read  = 0x00;
 unsigned char addr = 0b1101011;
 static unsigned char data[14];
-static unsigned char dataout[7];
+static signed short dataout[7];
 
 // send a byte via spi and return the response
 unsigned char spi_io(unsigned char o) {
@@ -95,27 +82,27 @@ void initC(){
     i2c_master_send(0x04);  //enabled IF_INC
     i2c_master_stop();
 }
-unsigned char I2C_read_multiple(char address,char register, unsigned char * data, char length){
+unsigned char I2C_read_multiple(char address,char reg, unsigned char * data, char length){
     i2c_master_start();
     i2c_master_send((address << 1) | 0); // write
-    i2c_master_send(register);
+    i2c_master_send(reg);
     i2c_master_restart();
     i2c_master_send((address << 1) | 1); // read
     int count = 0;
-    for(count = 0; count < length; count++)
+    for(count = 0; count < length-1; count++)
     {
         data[count] = i2c_master_recv();
         i2c_master_ack(0); // continue reading 
     }
-    data[length] = i2c_master_recv(); 
+    data[length-1] = i2c_master_recv(); 
     i2c_master_ack(1);
     i2c_master_stop();
 }
 
-unsigned char I2C_read(char register){
+unsigned char I2C_read(char reg){
     i2c_master_start();
     i2c_master_send(0xD6); //Write 0b1101011(D6h) 
-    i2c_master_send(register);
+    i2c_master_send(reg);
     i2c_master_restart();
     i2c_master_send(0xD7);//read 0b11010111 (D7h)
     read = i2c_master_recv();
@@ -142,7 +129,19 @@ void initOC_PWM(){
     OC2R = 1500;              // initialize before turning OC2 on; afterward it is read-only    
     T2CONbits.ON = 1;        // turn on Timer2
     OC1CONbits.ON = 1;       // turn on OC1    
-    OC2CONbits.ON = 1;       // turn on OC2    
+    OC2CONbits.ON = 1;       // turn on OC2   
+    
+    IPC2bits.T2IP = 5;
+    IPC2bits.T2IS = 0;
+    IFS0bits.T2IF = 0;
+    IEC0bits.T2IE = 1;
+    
+}
+void __ISR(_TIMER_2_VECTOR,IPL5SOFT) PWMcontroller(void){
+        OC1RS = 1500 + 1500*(dataout[4]/32768.0);
+        OC2RS = 1500 + 1500*(dataout[5]/32768.0);
+        
+        IFS0bits.T2IF = 0;  
 }
 int main(){
     __builtin_disable_interrupts();
@@ -163,39 +162,27 @@ int main(){
     initG();
     initC();    
     initOC_PWM();
-    __builtin_enable_interrupts();
-           
+    __builtin_enable_interrupts();           
                 
-    /*      
-    i2c_master_start();
-    i2c_master_send(0xD6);    
-    i2c_master_send(0x0F);//WHO_AM_I (0Fh)
-    i2c_master_restart();
-    i2c_master_send(0xD7);//read 0b11010111 (D7h)
-    read = i2c_master_recv();
-    i2c_master_ack(1);
-    i2c_master_stop();
-    */  
-    while(1) {       
+
+    while(1) {  
+        unsigned char r;
+        r = I2C_read(0x0F);       
         int length = 14;
         _CP0_SET_COUNT(0); // Reset the core counter
-        LATAbits.LATA4 = !LATAbits.LATA4;
+        //while(_CP0_GET_COUNT() < 12000){;}        
+        if(r == 0x69){
+            LATAbits.LATA4 = 1; 
+        }
+        else{
+            LATAbits.LATA4 = 0;   
+        }
         I2C_read_multiple(addr, OUT_TEMP_L, data, length);
+        while(_CP0_GET_COUNT() < 12000){;}
         int i = 0;
         for(i = 0; i < length/2; i++){    
             dataout[i] = (data[2*i+1] << 8 | data[2*i]);
         }    
-        
-        
-        
-        /*
-        while(_CP0_GET_COUNT() < 12000){;}
-        if(read == 0x69){
-            LATAbits.LATA4 = 1; 
         }
-        else{
-            LATAbits.LATA4 = 0; 
-        }*/
-    }
         while(_CP0_GET_COUNT() < 24000){;}    
-}
+ }
