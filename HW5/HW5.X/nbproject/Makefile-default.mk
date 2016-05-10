@@ -45,17 +45,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=ILI9163C.c main.c
+SOURCEFILES_QUOTED_IF_SPACED=ILI9163C.c main.c ../../HW1/HW1.X/i2c_master_noint.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/ILI9163C.o ${OBJECTDIR}/main.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/ILI9163C.o.d ${OBJECTDIR}/main.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/ILI9163C.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/151086721/i2c_master_noint.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/ILI9163C.o.d ${OBJECTDIR}/main.o.d ${OBJECTDIR}/_ext/151086721/i2c_master_noint.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/ILI9163C.o ${OBJECTDIR}/main.o
+OBJECTFILES=${OBJECTDIR}/ILI9163C.o ${OBJECTDIR}/main.o ${OBJECTDIR}/_ext/151086721/i2c_master_noint.o
 
 # Source Files
-SOURCEFILES=ILI9163C.c main.c
+SOURCEFILES=ILI9163C.c main.c ../../HW1/HW1.X/i2c_master_noint.c
 
 
 CFLAGS=
@@ -106,6 +106,12 @@ ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/main.o 
 	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/main.o.d" -o ${OBJECTDIR}/main.o main.c     
 	
+${OBJECTDIR}/_ext/151086721/i2c_master_noint.o: ../../HW1/HW1.X/i2c_master_noint.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/151086721" 
+	@${RM} ${OBJECTDIR}/_ext/151086721/i2c_master_noint.o.d 
+	@${RM} ${OBJECTDIR}/_ext/151086721/i2c_master_noint.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/151086721/i2c_master_noint.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1 -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/151086721/i2c_master_noint.o.d" -o ${OBJECTDIR}/_ext/151086721/i2c_master_noint.o ../../HW1/HW1.X/i2c_master_noint.c     
+	
 else
 ${OBJECTDIR}/ILI9163C.o: ILI9163C.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -118,6 +124,12 @@ ${OBJECTDIR}/main.o: main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/main.o.d 
 	@${RM} ${OBJECTDIR}/main.o 
 	@${FIXDEPS} "${OBJECTDIR}/main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/main.o.d" -o ${OBJECTDIR}/main.o main.c     
+	
+${OBJECTDIR}/_ext/151086721/i2c_master_noint.o: ../../HW1/HW1.X/i2c_master_noint.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/151086721" 
+	@${RM} ${OBJECTDIR}/_ext/151086721/i2c_master_noint.o.d 
+	@${RM} ${OBJECTDIR}/_ext/151086721/i2c_master_noint.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/151086721/i2c_master_noint.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/_ext/151086721/i2c_master_noint.o.d" -o ${OBJECTDIR}/_ext/151086721/i2c_master_noint.o ../../HW1/HW1.X/i2c_master_noint.c     
 	
 endif
 

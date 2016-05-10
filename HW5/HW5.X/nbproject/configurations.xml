@@ -15,6 +15,8 @@
       <itemPath>ILI9163C.c</itemPath>
       <itemPath>ILI9163C.h</itemPath>
       <itemPath>main.c</itemPath>
+      <itemPath>../../HW1/HW1.X/i2c_master_noint.c</itemPath>
+      <itemPath>../../HW1/HW1.X/i2c_master_noint.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

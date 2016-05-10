@@ -36,7 +36,51 @@
 #pragma config FUSBIDIO = ON // USB pins controlled by USB module
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
-static char string[20];
+#define OUT_TEMP_L  0b00100000
+
+static char string[100];
+unsigned char addr = 0b1101011;
+static unsigned char data[14];
+static signed short dataout[7];
+
+void initXL(){
+    i2c_master_start();
+    i2c_master_send(0xD6); //Write 0b1101011(D6h)
+    i2c_master_send(0x10); //CTRL1_XL (10h)
+    i2c_master_send(0x80);  //1.66 kHz
+    i2c_master_stop();
+}
+void initG(){
+    i2c_master_start();
+    i2c_master_send(0xD6); //Write 0b1101011(D6h)
+    i2c_master_send(0x11); //CTRL2_G (11h)
+    i2c_master_send(0x80);  //1.66 kHz
+    i2c_master_stop();
+}
+void initC(){
+    i2c_master_start();
+    i2c_master_send(0xD6); //Write 0b1101011(D6h)
+    i2c_master_send(0x12); //CTRL3_C (12h)
+    i2c_master_send(0x04);  //enabled IF_INC
+    i2c_master_stop();
+}
+
+unsigned char I2C_read_multiple(char address,char reg, unsigned char * data, char length){
+    i2c_master_start();
+    i2c_master_send((address << 1) | 0); // write
+    i2c_master_send(reg);
+    i2c_master_restart();
+    i2c_master_send((address << 1) | 1); // read
+    int count = 0;
+    for(count = 0; count < length-1; count++)
+    {
+        data[count] = i2c_master_recv();
+        i2c_master_ack(0); // continue reading 
+    }
+    data[length-1] = i2c_master_recv(); 
+    i2c_master_ack(1);
+    i2c_master_stop();
+}
 
 int main() {
 
@@ -59,23 +103,45 @@ int main() {
     
     TRISAbits.TRISA4 = 0;  // pin A4 as output
     //LATAbits.LATA4 = 1;    
+    i2c_master_setup();
+    initXL();
+    initG();
+    initC();    
+    
     SPI1_init();
     LCD_init();
     LCD_clearScreen(BLUE);
     //LCD_drawcharactor('H', 30, 30);
-    int variable = 1337;
-    sprintf(string, "Hello World %d!", variable); // code to print hello world
-    LCD_drawstring(string,28,32);
+    //int variable = 1337;
+    //sprintf(string, "Hello World %d!", variable);
+    //LCD_drawstring(string,28,32);
     __builtin_enable_interrupts();
     
-    while(1) {
-	    // use _CP0_SET_COUNT(0) and _CP0_GET_COUNT() to test the PIC timing
-		// remember the core timer runs at half the CPU speed
-        _CP0_SET_COUNT(0); // Reset the core counter 
-        LATAbits.LATA4 = 1;
-        while(_CP0_GET_COUNT() < 12000) 
-            { if (PORTBbits.RB4 == 0){ break; } }
-        if (PORTBbits.RB4 == 1){ LATAbits.LATA4 = 1;  } 
-        else{ LATAbits.LATA4 = 0; } 
-    }    
+    while(1) {       
+        int length = 14;
+        _CP0_SET_COUNT(0); // Reset the core counter
+        I2C_read_multiple(addr, OUT_TEMP_L, data, length);
+        while(_CP0_GET_COUNT() < 12000){;}
+        int i = 0;
+        for(i = 0; i < length/2; i++){    
+            dataout[i] = (data[2*i+1] << 8 | data[2*i]);
+        }
+        
+        sprintf(string, "temperature %5.2f *C", 25+(dataout[0]/16.0)); 
+        LCD_drawstring(string,23,22); 
+        sprintf(string, "g-x %5.3f", dataout[1]/32768.0*245); 
+        LCD_drawstring(string,23,32); 
+        sprintf(string, "g-y %5.3f", dataout[2]/32768.0*245); 
+        LCD_drawstring(string,23,42); 
+        sprintf(string, "g-z %5.3f", dataout[3]/32768.0*245); 
+        LCD_drawstring(string,23,52);         
+        sprintf(string, "acc-x %5.3f", dataout[4]/32768.0*2); 
+        LCD_drawstring(string,23,62); 
+        sprintf(string, "acc-y %5.3f", dataout[5]/32768.0*2); 
+        LCD_drawstring(string,23,72); 
+        sprintf(string, "acc-z %5.3f", dataout[6]/32768.0*2); 
+        LCD_drawstring(string,23,82);         
+        while(_CP0_GET_COUNT() < 24000){;} 
+    }
+      
 }
