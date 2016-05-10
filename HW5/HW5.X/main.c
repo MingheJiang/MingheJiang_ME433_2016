@@ -36,6 +36,7 @@
 #pragma config FUSBIDIO = ON // USB pins controlled by USB module
 #pragma config FVBUSONIO = ON // USB BUSON controlled by USB module
 
+static char string[20];
 
 int main() {
 
@@ -61,7 +62,10 @@ int main() {
     SPI1_init();
     LCD_init();
     LCD_clearScreen(BLUE);
-    LCD_drawcharactor('H', 30, 30);
+    //LCD_drawcharactor('H', 30, 30);
+    int variable = 1337;
+    sprintf(string, "Hello World %d!", variable); // code to print hello world
+    LCD_drawstring(string,28,32);
     __builtin_enable_interrupts();
     
     while(1) {
@@ -73,7 +77,5 @@ int main() {
             { if (PORTBbits.RB4 == 0){ break; } }
         if (PORTBbits.RB4 == 1){ LATAbits.LATA4 = 1;  } 
         else{ LATAbits.LATA4 = 0; } 
-    }
-    
-    
+    }    
 }

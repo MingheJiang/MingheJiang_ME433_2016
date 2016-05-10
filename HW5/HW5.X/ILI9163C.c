@@ -170,7 +170,6 @@ void LCD_drawPixel(unsigned short x, unsigned short y, unsigned short color) {
     LCD_data16(color);
 }
 void LCD_drawcharactor(char c, int x, int y) {
-    if (x >= 25 && x < 120 && y >= 25 && y < 120){
         int i = 0;
         char b;
         for (i = 0; i < 5; i++){
@@ -185,7 +184,13 @@ void LCD_drawcharactor(char c, int x, int y) {
                 }  
             }
         }
-    }
+}
+void LCD_drawstring(char *str, int x, int y) {
+        int i = 0;
+        while(str[i]){ 
+            LCD_drawcharactor(str[i], x + 5*i, y); 
+            i++;
+        }   
 }
 void LCD_setAddr(unsigned short x0, unsigned short y0, unsigned short x1, unsigned short y1) {
     LCD_command(CMD_CLMADRS); // Column
