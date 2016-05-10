@@ -1,6 +1,6 @@
 #include<xc.h>           // processor SFR definitions
 #include<sys/attribs.h>  // __ISR macro
-
+#include "ILI9163C.h"
 // DEVCFG0
 #pragma config DEBUG = OFF // no debugging
 #pragma config JTAGEN = OFF // no jtag
@@ -58,7 +58,10 @@ int main() {
     
     TRISAbits.TRISA4 = 0;  // pin A4 as output
     //LATAbits.LATA4 = 1;    
-    
+    SPI1_init();
+    LCD_init();
+    LCD_clearScreen(BLUE);
+    LCD_drawcharactor('H', 30, 30);
     __builtin_enable_interrupts();
     
     while(1) {
