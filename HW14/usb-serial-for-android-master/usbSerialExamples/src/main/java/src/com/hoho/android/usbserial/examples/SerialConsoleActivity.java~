@@ -330,23 +330,45 @@ public class SerialConsoleActivity extends Activity implements TextureView.Surfa
                 COM3 = wbCOM3/wbTotal3;
             }
 
+            int[] thresholdedPixels4 = new int[bmp.getWidth()];
+            int wbTotal4 = 0; // total mass
+            int wbCOM4 = 0; // total (mass time position)
+            for (int i = 0; i < bmp.getWidth(); i++) {
+                // sum the red, green and blue, subtract from 255 to get the darkness of the pixel.
+                // if it is greater than some value (600 here), consider it black
+                // play with the 600 value if you are having issues reliably seeing the line
+                if (255-red(pixels4[i]) < threshold) {
+                    thresholdedPixels4[i] = 255*3;
+                }
+                else {
+                    thresholdedPixels4[i] = 0;
+                }
+                wbTotal4 = wbTotal4 + thresholdedPixels4[i];
+                wbCOM4 = wbCOM4 + thresholdedPixels4[i]*i;
+            }
 
             // draw a circle where you think the COM is
-
+            canvas.drawCircle(COM, startY, 5, paint1);
             canvas.drawCircle(COM1, startY1, 5, paint1);
             canvas.drawCircle(COM2, startY2, 5, paint1);
             canvas.drawCircle(COM3, startY3, 5, paint1);
-
+            canvas.drawCircle(COM4, startY4, 5, paint1);
+            canvas.drawCircle(COM5, startY5, 5, paint1);
 
             // also write the value as text
+            canvas.drawText("COM = " + COM, 10, 50, paint1);
             canvas.drawText("COM1 = " + COM1, 10, 100, paint1);
             canvas.drawText("COM2 = " + COM2, 10, 150, paint1);
             canvas.drawText("COM3 = " + COM3, 10, 200, paint1);
-
+            canvas.drawText("COM4 = " + COM4, 10, 300, paint1);
+            canvas.drawText("COM5 = " + COM5, 10, 400, paint1);
+            //canvas.drawText("R = " + red(pixels[320]), 10, 220, paint1);
+            //canvas.drawText("G = " + green(pixels[320]), 10, 240, paint1);
+            //canvas.drawText("B = " + blue(pixels[320]), 10, 260, paint1);
             c.drawBitmap(bmp, 0, 0, null);
 
             // Transmit points to PIC
-            String sendString = String.valueOf(COM2)+"\n";
+            String sendString = String.valueOf(COM3)+"\n";
             try
             {
                 sPort.write(sendString.getBytes(), 16);
