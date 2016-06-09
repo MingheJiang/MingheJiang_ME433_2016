@@ -1,0 +1,10 @@
+I used one sliders in my app to control the threshold. 
+There are 3 points on the phone screen which represent 
+the center of mass. 
+The default was set to be 100% PWM output for both 
+left and right motors. 
+PWM of motors was changed in order to change direction. When
+ the COM2 was larger than 320, the 
+PWM of the right motor was decreased by (COM3-320)/320. When
+ the COM2 was smaller than 320, the PWM of the left motor 
+was decreased by (320-COM3)/320.
